@@ -1,4 +1,3 @@
-// Not solved
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -7,13 +6,11 @@ using namespace std;
 
 typedef struct _Node
 {
-    int num;
-    long long w;
+    long long num, w;
 } Node;
 typedef struct _Info
 {
-    int num;
-    long long w, minw;
+    long long num, w, minw;
 } Info;
 typedef struct _cmp
 {
@@ -25,7 +22,7 @@ typedef struct _cmp
 int n, m;
 vector<long long> cost;
 vector<vector<Node>> arr;
-vector<vector<int>> visited;
+vector<vector<long long>> last_dist;
 
 long long Dijk()
 {
@@ -33,24 +30,26 @@ long long Dijk()
     pq.push({1, 0, cost[1]});
 
     while(!pq.empty()) {
-        int num = pq.top().num;
+        long long num = pq.top().num;
         long long w = pq.top().w;
         long long minw = pq.top().minw;
         int len = (int)arr[num].size();
         pq.pop();
 
-        if(visited[num][minw] == 1) {
+        if(w >= last_dist[num][minw]) {
             continue;
         }
-        visited[num][minw] = 1;
+        last_dist[num][minw] = w;
+
         if(num == n) {
             return w;
         }
 
         for(int i=0; i<len; i++) {
-            int next = arr[num][i].num;
-            int nextw = arr[num][i].w;
-            pq.push({next, w + minw*nextw, min(minw, cost[next])});
+            long long next = arr[num][i].num;
+            long long nextw = arr[num][i].w;
+            long long target = min(minw, cost[next]);
+            pq.push({next, w + minw*nextw, target});
         }
     }
 
@@ -58,19 +57,17 @@ long long Dijk()
 
 int main()
 {
-    freopen("input.txt", "r", stdin);
     scanf("%d %d", &n, &m);
     cost.resize(n+1);
     arr.resize(n+1);
-    visited.assign(n+1, vector<int>(2501, 0));
+    last_dist.assign(n+1, vector<long long>(2501, (long long)2e18));
     
-    int head, tail;
-    long long w;
+    long long head, tail, w;
     for(int i=1; i<=n; i++) {
         scanf("%lld", &cost[i]);
     }
-    for(int i=1; i<=n; i++) {
-        scanf("%d %d %lld", &head, &tail, &w);
+    for(int i=1; i<=m; i++) {
+        scanf("%lld %lld %lld", &head, &tail, &w);
         arr[head].push_back({tail, w});
         arr[tail].push_back({head, w});
     }
