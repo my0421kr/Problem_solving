@@ -34,5 +34,5 @@ int main()
     for(int i=1; i<=m; i++) {
         scanf("%d %d", &head, &tail);
         printf("%d\n", IsPalindrome(head, tail));
-    }
+    } 
 }

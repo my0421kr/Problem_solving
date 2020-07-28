@@ -48,5 +48,5 @@ int main()
             scanf("%d", &arr[j]);
         }
         printf("%d\n", Function(0, n-1));
-    }
+    } 
 }
