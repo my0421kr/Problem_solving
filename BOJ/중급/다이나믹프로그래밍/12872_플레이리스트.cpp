@@ -1,49 +1,32 @@
-// Not solved
 #include <iostream>
 #include <vector>
 #define MAX 1000000007
 using namespace std;
 
 int n, m, p;
-int cache[101][101][101];
+vector<vector<long long>> cache;
 
-int Fact(int num)
+long long f(int inserted, int space)
 {
-    if(num == 1) {
+    if(inserted == 0 && space == 0) {
         return 1;
-    } else {
-        return Fact(num-1) * num;
+    } else if(inserted == 0 || space == 0) {
+        return 0;
     }
-}
-
-int f(int numSing, int numSpace, int defi)
-{
-    printf("%d %d\n", numSing, numSpace);
-    if(numSing == numSpace) {
-        return Fact(numSing);
-    }
-    if(cache[numSing][numSpace][defi] == -1) {
-        cache[numSing][numSpace][defi] = f(numSing, numSpace-1, defi)*(numSing-m);
-    }
-    return cache[numSing][numSpace][defi];
-}
-
-void Init()
-{
-    for(int i=0; i<=100; i++) {
-        for(int j=0; j<=100; j++) {
-            for(int k=0; k<=100; k++) {
-                cache[i][j][k] = -1;
-            }
+    if(cache[inserted][space] == -1) {
+        cache[inserted][space] = f(inserted-1, space-1) * (n - (inserted - 1));
+        if(inserted >= m) {
+            cache[inserted][space] += f(inserted, space-1) * (inserted - m);
         }
+        cache[inserted][space] %= MAX;
     }
+    return cache[inserted][space];
 }
 
 int main()
 {
-    freopen("input.txt", "r", stdin);
     scanf("%d %d %d", &n, &m, &p);
 
-    Init();
-    printf("%d\n", f(n, p, 0));
+    cache.assign(n+1, vector<long long>(p+1, -1));
+    printf("%lld\n", f(n, p));
 }
